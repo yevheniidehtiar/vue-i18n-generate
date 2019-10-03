@@ -6,16 +6,17 @@ This utility parse your source codebase and save all found terms for each locale
 
 Updating strategy: "Your original terms will save over generated" and manually added terms to files will be saved after each generating.
 
+## How to use
+Play and learn with `example`. Run `demo_generate` to watch the magic ^-) 
+
 
 ## Cookbook
-Add `makemessages.py` and `config.py` to the root of your project source code.
+Add `core.py, nuxt_config.py, nuxt_generate.py` to the root of your project source code.
 
 Created and used the utility is on Nuxt, but you can reconfigure it for your project.   
-Edit the `config.py` 
+Edit `nuxt_config.py` to reconfigure. Run `nuxt_generate.py`
 
 ````
-EMPTY_TERM = "you can define your own"
-
 PATHS = [
   'project', 'folders', 'that', 'you', 'want', 'to', 'parse',
 ]

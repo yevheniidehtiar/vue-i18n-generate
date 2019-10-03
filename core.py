@@ -1,4 +1,12 @@
-from config import *
+"""
+  Thanks to https://stackoverflow.com/questions/3232943/update-value-of-a-nested-dictionary-of-varying-depth
+            https://stackoverflow.com/questions/40401886/how-to-create-a-nested-dictionary-from-a-list-in-python
+            https://stackoverflow.com/questions/973473/getting-a-list-of-all-subdirectories-in-the-current-directory
+
+  Regex:
+            https://regex101.com/r/Ramwl1/1
+
+"""
 
 import os
 import re
@@ -6,6 +14,7 @@ import collections
 import six
 import json
 import logging
+import copy
 
 logger = logging.Logger(__name__)
 
@@ -28,38 +37,50 @@ def deep_dict_update(d, u):
     return d
 
 
-def list_to_object(l):
-    tree_dict = EMPTY_TERM  # empty term
-    for key in reversed(l):
+def str_to_object(string, empty_term='need to fill'):
+    keys = string.split('.')
+    tree_dict = empty_term  # empty term
+    for key in reversed(keys):
         tree_dict = {key: tree_dict}
     return tree_dict
 
 
-def str_to_object(val):
-    keys = val.split('.')
-    return list_to_object(keys)
-
-
-def generate_messages():
+def generate_messages(paths):
     messages = []
-    for folder in PATHS:
-        for file in os.listdir(folder):
-            file_path = '%s/%s' % (folder, file)
-            if os.path.isfile(file_path):
-                data = file_read(file_path)
-                if data:
-                    messages += mining_terms(data)
-            elif os.path.isdir(file_path):
-                for sub_file in os.listdir(file_path):
-                    subfile_path = '%s/%s' % (file_path, sub_file)
-                    if os.path.isfile(subfile_path):
-                        messages += mining_terms(file_read(subfile_path))
+
+    for folder in paths:
+        messages += mine_folder(folder)
 
     terms = {}
     for message in messages:
         deep_dict_update(terms, str_to_object(message))
 
     return terms
+
+
+def abspath(r, c):
+    path = os.path.abspath(os.path.join(r, c))
+    resource = 'Folder' if os.path.isdir(path) else 'file'
+    if os.path.isdir(path):
+        print('\n')
+    print(f'...Scan {resource} `{os.path.relpath(path)}`')
+    return path
+
+
+def mine_folder(folder):
+    messages = []
+    for root, subs, files in os.walk(folder):
+        for sub in subs:
+            messages += mine_folder(abspath(root, sub))
+        messages += mine_files(root, files)
+    return messages
+
+
+def mine_files(root, files):
+    messages = []
+    for file in files:
+        messages += mine_terms(file_read(abspath(root, file)))
+    return messages
 
 
 def file_read(path):
@@ -74,17 +95,21 @@ def file_read(path):
     return None
 
 
-def mining_terms(text):
+def mine_terms(text):
     regex = re.compile(r'\Wtc?\([\"\'][\w\.]+[\"\'][,)]')
     matches = regex.findall(text)
     return [re.search(r'[\"\'].+[\"\']', match).group()[1:-1] for match in matches]
 
 
-def update_messages():
+def update_messages(locales, paths, i18n_folder='lang'):
     print("...Start generation new i18n terms files")
-    for locale in LOCALES:
-        path = f'lang/{locale}.js'
+    generated_messages = generate_messages(paths)
+
+    for locale in locales:
+        path = f'{i18n_folder}/{locale}.js'
         old_messages = {}
+        new_messages = copy.deepcopy(generated_messages)
+
         if os.path.isfile(path):
             data = file_read(path)
             if data:
@@ -92,6 +117,8 @@ def update_messages():
                     #  15 is shift to skip `export default`
                     old_messages = json.loads(data[15:])
                     logger.debug(f'...Updating {locale}.js')
+
+                    deep_dict_update(new_messages, old_messages)
                 except Exception as e:
                     logger.error(f'...Read error {locale}.js')
                     logger.error(f'...Creating {locale}.js')
@@ -99,10 +126,8 @@ def update_messages():
         else:
             print(f'...Creating {locale}.js')
 
-        new_messages = generate_messages()
-        deep_dict_update(new_messages, old_messages)
-
         messages_dump = json.dumps(new_messages, ensure_ascii=False, indent=2)
+
         try:
             with open(path, 'w') as f:
                 f.write("export default ")
@@ -113,6 +138,3 @@ def update_messages():
                     print(f'...Created {locale}.js')
         except Exception as e:
             logger.error(f'...Error on saving {path}')
-
-
-update_messages()
