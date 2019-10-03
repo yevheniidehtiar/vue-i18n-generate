@@ -8,7 +8,7 @@ Updating strategy: "Your original terms will save over generated" and manually a
 
 
 ## Cookbook
-Add `makemessages.py` to the root of your project source code.
+Add `makemessages.py` and `config.py` to the root of your project source code.
 
 Created and used the utility is on Nuxt, but you can reconfigure it for your project.   
 Edit the `config.py` 
@@ -29,6 +29,11 @@ LOCALES = [
 ## Requirements 
 Python 2/3. Tested on 3.7.
 
+I hope that everyone coder have python in working env. But for "zero-pythonists"
+ 
+`pip install -r requirements.txt` 
+
+ There is only `six` package. 
 
 ## TODO:
 1. Add support to messages with params like `$t('msg', {param1: 'value'})`
