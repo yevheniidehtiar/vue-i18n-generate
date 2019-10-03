@@ -1,6 +1,6 @@
 # About
 Nuxt and vue project i18n don't have cli to grab from code all i18n messages like:
-`$t('msg'), $t('msg.nested'), $tc('verbose')`
+`$t('msg'), $t('msg.nested.like.object.json'), $tc("verbose", {param1: 'value'})`
 
 This utility parse your source codebase and save all found terms for each locale to `lang/${locale}.js`.
 
@@ -36,5 +36,13 @@ I hope that everyone coder have python in working env. But for "zero-pythonists"
  There is only `six` package. 
 
 ## TODO:
-1. Add support to messages with params like `$t('msg', {param1: 'value'})`
-2. Add cli parameters for Vue and Nuxt unique logic
+1. ✅ Add support to messages with params like `$t('msg', {param1: 'value'})` 
+2. Add cli parameters for Vue and Nuxt unique logic (project folders)
+
+
+## Contributing
+
+Here is main regex to parse files: 
+https://regex101.com/r/Ramwl1/4
+
+You can fork and improve this

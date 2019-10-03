@@ -75,7 +75,7 @@ def file_read(path):
 
 
 def mining_terms(text):
-    regex = re.compile(r'\Wtc?\([\"\'][\w\.]+[\"\']\)')
+    regex = re.compile(r'\Wtc?\([\"\'][\w\.]+[\"\'][,)]')
     matches = regex.findall(text)
     return [re.search(r'[\"\'].+[\"\']', match).group()[1:-1] for match in matches]
 
