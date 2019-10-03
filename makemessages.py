@@ -1,4 +1,4 @@
-
+from config import *
 
 import os
 import re
@@ -14,16 +14,6 @@ try:
     collectionsAbc = collections.abc
 except:
     collectionsAbc = collections
-
-EMPTY_TERM = "need to fill"
-
-PATHS = [
-  'components', 'layouts', 'middleware', 'mixins', 'pages', 'plugins', 'store'
-]
-
-LOCALES = [
-  'uk_UA', 'ru_RU'
-]
 
 
 def deep_dict_update(d, u):
