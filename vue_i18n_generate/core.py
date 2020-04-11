@@ -118,7 +118,8 @@ def update_messages(locales, paths, i18n_folder='lang', format='js'):
             if data:
                 try:
                     #  15 is shift to skip `export default`
-                    old_messages = json.loads(data[15:])
+                    old_messages = json.loads(data[15:] if format == 'js'
+                                              else data)
                     logger.debug(f'...Updating {locale}.js')
 
                     deep_dict_update(new_messages, old_messages)
