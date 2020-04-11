@@ -4,7 +4,7 @@
             https://stackoverflow.com/questions/973473/getting-a-list-of-all-subdirectories-in-the-current-directory
 
   Regex:
-            https://regex101.com/r/Ramwl1/1
+            https://regex101.com/r/Ramwl1/5
 
 """
 
@@ -96,7 +96,7 @@ def file_read(path):
 
 
 def mine_terms(text):
-    regex = re.compile(r'\Wtc?\([\"\'][\w\.]+[\"\'][,)]')
+    regex = re.compile(r'\Wtc?\([\"\'][\w\.\s]+[\"\'][,)]')
     matches = regex.findall(text)
     return [re.search(r'[\"\'].+[\"\']', match).group()[1:-1] for match in matches]
 

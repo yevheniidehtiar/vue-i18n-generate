@@ -1,7 +1,8 @@
 <template>
   <v-card flat>
     <v-card-title>
-      <h3>{{$t('modals.appointment.header')}}</h3>
+      <h3>{{ $t('modals.appointment.header') }}</h3>
+      <h3>{{ $t('term with spaces') }}</h3>
       <h5 v-show="this.$vuetify.breakpoint.xsOnly">{{ $t('modals.appointment.doctor', {name: this.doctor.name}) }}</h5>
     </v-card-title>
     <v-card-text>

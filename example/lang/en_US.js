@@ -10,5 +10,6 @@ export default {
       "dateLabel": "need to fill"
     }
   },
+  "term with spaces": "need to fill",
   "appointment": "need to fill"
 }
