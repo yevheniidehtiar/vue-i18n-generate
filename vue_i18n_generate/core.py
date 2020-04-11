@@ -39,7 +39,7 @@ def deep_dict_update(d, u):
 
 def str_to_object(string, empty_term=None):
     keys = string.split('.')
-    tree_dict = empty_term or keys  # empty term or keys as value instead
+    tree_dict = empty_term or string  # empty term or string as value instead
     for key in reversed(keys):
         tree_dict = {key: tree_dict}
     return tree_dict
