@@ -101,12 +101,15 @@ def mine_terms(text):
     return [re.search(r'[\"\'].+[\"\']', match).group()[1:-1] for match in matches]
 
 
-def update_messages(locales, paths, i18n_folder='lang'):
+def update_messages(locales, paths, i18n_folder='lang', format='js'):
     print("...Start generation new i18n terms files")
     generated_messages = generate_messages(paths)
 
+    if format not in ('js', 'json'):
+        raise ValueError('format should be `js` or `json`')
+
     for locale in locales:
-        path = f'{i18n_folder}/{locale}.js'
+        path = f'{i18n_folder}/{locale}.{format}'
         old_messages = {}
         new_messages = copy.deepcopy(generated_messages)
 
@@ -130,7 +133,8 @@ def update_messages(locales, paths, i18n_folder='lang'):
 
         try:
             with open(path, 'w') as f:
-                f.write("export default ")
+                if format == 'js':
+                    f.write("export default ")
                 f.write(messages_dump)
                 if len(old_messages.keys()) > 0:
                     print(f'...Updated {locale}.js')
