@@ -37,15 +37,15 @@ def deep_dict_update(d, u):
     return d
 
 
-def str_to_object(string, empty_term='need to fill'):
+def str_to_object(string, empty_term=None):
     keys = string.split('.')
-    tree_dict = empty_term  # empty term
+    tree_dict = empty_term or keys  # empty term or keys as value instead
     for key in reversed(keys):
         tree_dict = {key: tree_dict}
     return tree_dict
 
 
-def generate_messages(paths):
+def generate_messages(paths, empty_term):
     messages = []
 
     for folder in paths:
@@ -53,7 +53,10 @@ def generate_messages(paths):
 
     terms = {}
     for message in messages:
-        deep_dict_update(terms, str_to_object(message))
+        deep_dict_update(
+            terms,
+            str_to_object(message, empty_term=empty_term)
+        )
 
     return terms
 
@@ -98,15 +101,18 @@ def file_read(path):
 def mine_terms(text):
     regex = re.compile(r'\Wtc?\([\"\'][\w\.\s]+[\"\'][,)]')
     matches = regex.findall(text)
-    return [re.search(r'[\"\'].+[\"\']', match).group()[1:-1] for match in matches]
+    return [re.search(r'[\"\'].+[\"\']', match).group()[1:-1] for match in
+            matches]
 
 
-def update_messages(locales, paths, i18n_folder='lang', format='js'):
-    print("...Start generation new i18n terms files")
-    generated_messages = generate_messages(paths)
+def update_messages(locales, paths, i18n_folder='lang', format='js',
+                    empty_term=None):
 
     if format not in ('js', 'json'):
         raise ValueError('format should be `js` or `json`')
+
+    print("...Start generation new i18n terms files")
+    generated_messages = generate_messages(paths, empty_term)
 
     for locale in locales:
         path = f'{i18n_folder}/{locale}.{format}'
