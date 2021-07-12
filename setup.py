@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-__version__ = "0.1.3"
+__version__ = "0.2"
 
 
 setup(
@@ -31,6 +31,6 @@ setup(
     zip_safe=False,
     # specify dependencies
     install_requires=[
-        'six',
+        'sortedcontainers',
     ]
 )

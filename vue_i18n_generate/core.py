@@ -11,7 +11,7 @@
 import os
 import re
 import collections
-import six
+from sortedcontainers import SortedDict
 import json
 import logging
 import copy
@@ -26,7 +26,7 @@ except:
 
 
 def deep_dict_update(d, u):
-    for k, v in six.iteritems(u):
+    for k, v in u.items():
         dv = d.get(k, {})
         if not isinstance(dv, collectionsAbc.Mapping):
             d[k] = v
@@ -34,7 +34,7 @@ def deep_dict_update(d, u):
             d[k] = deep_dict_update(dv, v)
         else:
             d[k] = v
-    return d
+    return SortedDict(d)
 
 
 def str_to_object(string, empty_term=None):
@@ -58,7 +58,7 @@ def generate_messages(paths, empty_term):
             str_to_object(message, empty_term=empty_term)
         )
 
-    return terms
+    return SortedDict(terms)
 
 
 def abspath(r, c):
